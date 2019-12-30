@@ -43,6 +43,9 @@ export class TasksService {
 
   updateTaskStatus(id: string, status: TaskStatus): Task {
     const taskIndex = this.tasks.findIndex(task => task.id === id);
+    if (taskIndex === -1) {
+      return null;
+    }
     this.tasks[taskIndex].status = status;
     return this.tasks[taskIndex];
   }
