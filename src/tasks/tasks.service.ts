@@ -5,6 +5,7 @@ import { getTasksFilterDto } from './dto/getTasksFilter.dto';
 import { TaskRepository } from './task.repository';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Task } from './task.entity';
+import { User } from 'src/auth/user.entity';
 
 @Injectable()
 export class TasksService {
@@ -12,20 +13,26 @@ export class TasksService {
     @InjectRepository(TaskRepository) private taskRepository: TaskRepository,
   ) {}
 
-  getAllTasks(filterDto: getTasksFilterDto): Promise<Task[]> {
-    return this.taskRepository.getTasks(filterDto);
+  getAllTasks(filterDto: getTasksFilterDto, user: User): Promise<Task[]> {
+    return this.taskRepository.getTasks(filterDto, user);
   }
 
-  async getTaskById(id: number): Promise<Task> {
-    return this.taskRepository.findOne(id);
+  async getTaskById(id: number, user: User): Promise<Task> {
+    return this.taskRepository.findOne({ where: { id, userId: user.id } });
   }
 
-  async createTask(createTaskDto: CreateTaskDto): Promise<Task> {
-    return this.taskRepository.createTask(createTaskDto);
+  async createTask(createTaskDto: CreateTaskDto, user: User): Promise<Task> {
+    return this.taskRepository.createTask(createTaskDto, user);
   }
 
-  async updateTaskStatus(id: number, status: TaskStatus): Promise<Task> {
-    const task = await this.taskRepository.findOne(id);
+  async updateTaskStatus(
+    id: number,
+    status: TaskStatus,
+    user: User,
+  ): Promise<Task> {
+    const task = await this.taskRepository.findOne({
+      where: { id, userId: user.id },
+    });
     if (!task) return null;
     task.status = status;
     await task.save();
@@ -33,8 +40,11 @@ export class TasksService {
     return task;
   }
 
-  async deleteTask(id: number): Promise<number> {
-    const deleteResult = await this.taskRepository.delete(id);
+  async deleteTask(id: number, user: User): Promise<number> {
+    const deleteResult = await this.taskRepository.delete({
+      id,
+      userId: user.id,
+    });
     return deleteResult.affected;
   }
 }
