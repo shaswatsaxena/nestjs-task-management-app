@@ -7,7 +7,6 @@ import {
 } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { Task } from 'src/tasks/task.entity';
-import { type } from 'os';
 
 @Entity()
 export class User extends BaseEntity {
