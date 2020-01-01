@@ -5,6 +5,7 @@ import {
   ValidationPipe,
   ConflictException,
   InternalServerErrorException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { authCredentialsDto } from './dto/authCredentials.dto';
 import { AuthService } from './auth.service';
@@ -23,6 +24,18 @@ export class AuthController {
       if (error?.code === '23505')
         throw new ConflictException(`Username taken!`);
       throw new InternalServerErrorException();
+    }
+  }
+
+  @Post('/signin')
+  async signIn(
+    @Body(ValidationPipe) authCredentialsDto: authCredentialsDto,
+  ): Promise<{ accessToken: string }> {
+    try {
+      const accessToken = await this.authService.signIn(authCredentialsDto);
+      return accessToken;
+    } catch (error) {
+      throw new UnauthorizedException(error.message);
     }
   }
 }
