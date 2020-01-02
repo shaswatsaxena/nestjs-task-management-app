@@ -1,7 +1,15 @@
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 import * as config from 'config';
 
-const dbConfig = config.get('db');
+const dbConfig: {
+  type;
+  host;
+  port;
+  username;
+  password;
+  database;
+  synchronize;
+} = config.get('db');
 
 export const typeOrmConfig: TypeOrmModuleOptions = {
   type: dbConfig.type,
