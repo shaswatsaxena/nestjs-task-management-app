@@ -41,7 +41,7 @@ export class TasksController {
   constructor(private tasksService: TasksService) {}
 
   @Get()
-  @ApiResponse({ type: [Task] })
+  @ApiResponse({ status: 200, type: [Task] })
   async getTasks(
     @Query(ValidationPipe) filterDto: getTasksFilterDto,
     @GetUser() user: User,
@@ -55,7 +55,7 @@ export class TasksController {
   }
 
   @Get(':id')
-  @ApiResponse({ type: Task })
+  @ApiResponse({ status: 200, type: Task })
   async getTaskById(
     @Param('id', ParseIntPipe) id: number,
     @GetUser() user: User,
@@ -68,7 +68,7 @@ export class TasksController {
   }
 
   @Post()
-  @ApiResponse({ type: Task })
+  @ApiResponse({ status: 201, type: Task })
   @UsePipes(ValidationPipe)
   async createTask(
     @Body() createTaskDto: CreateTaskDto,
