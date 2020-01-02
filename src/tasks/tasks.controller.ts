@@ -15,6 +15,14 @@ import {
   Logger,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
+import {
+  ApiBearerAuth,
+  ApiTags,
+  ApiBody,
+  ApiResponse,
+  ApiNotFoundResponse,
+  ApiOkResponse,
+} from '@nestjs/swagger';
 import { TasksService } from './tasks.service';
 import { TaskStatus } from './taskStatus.enum';
 import { CreateTaskDto } from './dto/createTask.dto';
@@ -24,6 +32,8 @@ import { Task } from './task.entity';
 import { GetUser } from 'src/auth/getUser.decorator';
 import { User } from 'src/auth/user.entity';
 
+@ApiTags('tasks')
+@ApiBearerAuth()
 @Controller('tasks')
 @UseGuards(AuthGuard())
 export class TasksController {
@@ -31,6 +41,7 @@ export class TasksController {
   constructor(private tasksService: TasksService) {}
 
   @Get()
+  @ApiResponse({ type: [Task] })
   async getTasks(
     @Query(ValidationPipe) filterDto: getTasksFilterDto,
     @GetUser() user: User,
@@ -44,6 +55,7 @@ export class TasksController {
   }
 
   @Get(':id')
+  @ApiResponse({ type: Task })
   async getTaskById(
     @Param('id', ParseIntPipe) id: number,
     @GetUser() user: User,
@@ -56,6 +68,7 @@ export class TasksController {
   }
 
   @Post()
+  @ApiResponse({ type: Task })
   @UsePipes(ValidationPipe)
   async createTask(
     @Body() createTaskDto: CreateTaskDto,
@@ -70,6 +83,7 @@ export class TasksController {
   }
 
   @Patch(':id/status')
+  @ApiResponse({ status: 200, type: Task })
   async updateTaskStatus(
     @Param('id', ParseIntPipe) id: number,
     @Body('status', TaskStatusValidationPipe) status: TaskStatus,
@@ -87,6 +101,8 @@ export class TasksController {
   }
 
   @Delete(':id')
+  @ApiOkResponse()
+  @ApiNotFoundResponse({ description: 'Task with Id: {id} does not exists!' })
   async deleteTask(
     @Param('id', ParseIntPipe) id: number,
     @GetUser() user: User,

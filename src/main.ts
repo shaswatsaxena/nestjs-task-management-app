@@ -1,5 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { Logger } from '@nestjs/common';
+import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import * as config from 'config';
 import * as helmet from 'helmet';
 import * as rateLimit from 'express-rate-limit';
@@ -18,8 +19,18 @@ async function bootstrap() {
     }),
   );
 
-  const port = process.env.PORT || config.get('server.port');
+  const options = new DocumentBuilder()
+    .setTitle('Task Management App')
+    .setDescription('The task management API description')
+    .setVersion('1.0')
+    .addTag('auth')
+    .addTag('tasks')
+    .addBearerAuth()
+    .build();
+  const document = SwaggerModule.createDocument(app, options);
+  SwaggerModule.setup('/', app, document);
 
+  const port = process.env.PORT || config.get('server.port');
   await app.listen(port);
   logger.log(`Application listening on port ${port}`);
 }
