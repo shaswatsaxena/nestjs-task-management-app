@@ -6,7 +6,7 @@ import {
   ManyToOne,
 } from 'typeorm';
 import { TaskStatus } from './taskStatus.enum';
-import { User } from 'src/auth/user.entity';
+import { User } from '../../src/auth/user.entity';
 import { ApiResponseProperty } from '@nestjs/swagger';
 
 @Entity()
