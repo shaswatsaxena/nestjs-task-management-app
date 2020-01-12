@@ -16,6 +16,8 @@ import { typeOrmConfig } from './config/typeorm.config';
         outputAs: 'class',
       },
       context: ({ req }) => ({ req }),
+      playground: true,
+      introspection: true,
     }),
     TasksModule,
     TypeOrmModule.forRoot(typeOrmConfig),
