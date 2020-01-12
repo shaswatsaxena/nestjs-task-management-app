@@ -1,0 +1,25 @@
+enum TaskStatus {
+  OPEN
+  IN_PROGRESS
+  DONE
+}
+
+type Task {
+  id: ID!
+  title: String!
+  description: String!
+  status: TaskStatus!
+  userId: Int!
+}
+
+type Query {
+  getTasks(search: String, status: String): [Task]!
+
+  getTaskById(id: ID!): Task!
+}
+
+type Mutation {
+  createTask(title: String!, description: String!): Task!
+  deleteTask(id: ID!): Boolean
+  updateTaskStatus(id: ID!, status: TaskStatus!): Task!
+}

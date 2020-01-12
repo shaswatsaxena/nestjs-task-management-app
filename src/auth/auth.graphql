@@ -1,0 +1,13 @@
+type AccessToken {
+  accessToken: String!
+}
+
+input AuthCredentialsInput {
+  username: String!
+  password: String!
+}
+
+type Mutation {
+  signIn(credentials: AuthCredentialsInput!): AccessToken!
+  signUp(credentials: AuthCredentialsInput!): Boolean!
+}
